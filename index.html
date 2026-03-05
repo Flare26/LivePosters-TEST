@@ -204,6 +204,24 @@
       box-shadow: 0 8px 40px rgba(0,212,255,0.12), 0 0 0 1px rgba(0,212,255,0.1);
     }
 
+    /* Cards within the world-expects range */
+    .card.in-world {
+      border-color: #00ff88;
+    }
+    .card.in-world:hover {
+      border-color: #00ff88;
+      box-shadow: 0 8px 40px rgba(0,255,136,0.15), 0 0 0 1px rgba(0,255,136,0.2);
+    }
+    .card.in-world::after {
+      border-top-color: #00ff88;
+      border-right-color: #00ff88;
+    }
+    .card.in-world .slot-id {
+      background: rgba(0,255,136,0.15);
+      color: #00ff88;
+      border-color: rgba(0,255,136,0.3);
+    }
+
     /* stagger */
     .card:nth-child(1) { animation-delay: 0.05s }
     .card:nth-child(2) { animation-delay: 0.10s }
@@ -441,7 +459,7 @@
     { id: 'POSTER-18', file: 'LivePosters/poster18.png', label: 'Poster 18' },
     { id: 'POSTER-19', file: 'LivePosters/poster19.png', label: 'Poster 19' },
     { id: 'POSTER-20', file: 'LivePosters/poster20.png', label: 'Poster 20' },
-];
+  ];
   // ───────────────────────────────────────────────────────────────────────────
 
   // Fetch the world-expected poster count from postercount.txt
@@ -450,10 +468,18 @@
     .then(txt => {
       const n = parseInt(txt.trim(), 10);
       document.getElementById('world-expects').textContent = isNaN(n) ? '—' : n;
+      if (!isNaN(n)) highlightInWorldCards(n);
     })
     .catch(() => {
       document.getElementById('world-expects').textContent = '—';
     });
+
+  function highlightInWorldCards(count) {
+    const cards = document.querySelectorAll('#poster-grid .card');
+    cards.forEach((card, i) => {
+      if (i < count) card.classList.add('in-world');
+    });
+  }
 
   function buildGrid() {
     const grid = document.getElementById('poster-grid');
