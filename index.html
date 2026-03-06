@@ -265,6 +265,35 @@
       z-index: 2;
     }
 
+    /* Oversize image warning */
+    .oversize-warn {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      font-family: 'Orbitron', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      background: rgba(255,77,109,0.15);
+      color: var(--danger);
+      border-top: 1px solid rgba(255,77,109,0.3);
+      padding: 6px 10px;
+      text-align: center;
+      z-index: 2;
+      backdrop-filter: blur(4px);
+    }
+    .card.oversize {
+      border-color: var(--danger);
+    }
+    .card.oversize:hover {
+      border-color: var(--danger);
+      box-shadow: 0 8px 40px rgba(255,77,109,0.15), 0 0 0 1px rgba(255,77,109,0.2);
+    }
+    .card.oversize::after {
+      border-top-color: var(--danger);
+      border-right-color: var(--danger);
+    }
+
     /* Image area */
     .card-img {
       width: 100%;
@@ -504,7 +533,16 @@
         </svg>
         NO IMAGE`;
 
-      img.onload  = () => { updateCounts(); };
+      img.onload  = () => {
+        if (img.naturalWidth > 2048 || img.naturalHeight > 2048) {
+          const warn = document.createElement('div');
+          warn.className = 'oversize-warn';
+          warn.textContent = `EXCEEDS 2048×2048 — ${img.naturalWidth}×${img.naturalHeight} will fail in VRChat`;
+          card.classList.add('oversize');
+          card.appendChild(warn);
+        }
+        updateCounts();
+      };
       img.onerror = () => {
         img.replaceWith(placeholder);
         updateCounts();
